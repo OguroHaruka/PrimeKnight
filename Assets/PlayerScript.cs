@@ -59,6 +59,7 @@ public class PlayerScript : MonoBehaviour
         isWeaponColider = true;
         isDead = false;
         recoveryItem = 3;
+        Application.targetFrameRate = 60;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -142,7 +143,7 @@ public class PlayerScript : MonoBehaviour
 
             if (isStaminaRecovery == true && isRollingStaminaReduce == false)
             {
-                stamina.value += 1;
+                stamina.value += 4;
             }
 
             if (stamina.value <= 0)

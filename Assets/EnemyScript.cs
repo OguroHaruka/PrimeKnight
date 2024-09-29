@@ -52,7 +52,8 @@ public class EnemyScript : MonoBehaviour
         hitPlayer2 = false;
         hitPlayer3 = false;
         isDead=false;
-        enemySpeed = 0.008f;
+        enemySpeed = 0.06f;
+        Application.targetFrameRate = 60;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -123,7 +124,7 @@ public class EnemyScript : MonoBehaviour
         else if (attackCount == 4)
         {
             isDead = true;
-            enemySpeed = 0.0f;
+            //enemySpeed = 0.0f;
         }
     }
 
@@ -161,7 +162,7 @@ public class EnemyScript : MonoBehaviour
             count++;
         }
 
-        if (count >= 300)
+        if (count >= 200)
         {  
             count = 0;
             hitPlayer = false;
@@ -187,7 +188,7 @@ public class EnemyScript : MonoBehaviour
 
         if (isAttack == false)
         {
-            enemySpeed = 0.013f;
+            enemySpeed = 0.05f;
             animator.SetBool("Walk", true);
         }
 
@@ -201,7 +202,7 @@ public class EnemyScript : MonoBehaviour
             }
             count++;
 
-            if (count >= 1000)
+            if (count >= 100)
             {
                 count = 0;
                 attackCount = 3;
@@ -217,7 +218,7 @@ public class EnemyScript : MonoBehaviour
 
     private void RemovePattern()
     {
-        enemySpeed = 0.005f;
+        enemySpeed = 0.03f;
         
         var speed = Vector3.zero;
         speed.z = enemySpeed;
@@ -240,7 +241,7 @@ public class EnemyScript : MonoBehaviour
 
     private void RemovePattern2()
     {
-        enemySpeed = 0.005f;
+        enemySpeed = 0.03f;
 
         var speed = Vector3.zero;
         speed.z = enemySpeed;
@@ -254,7 +255,7 @@ public class EnemyScript : MonoBehaviour
 
 
 
-        if (count >= 1000)
+        if (count >= 180)
         {
             playerDamage = false;
             attackCount = 0;

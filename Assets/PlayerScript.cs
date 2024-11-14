@@ -210,6 +210,7 @@ public class PlayerScript : MonoBehaviour
         {
             if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack1"))
             {
+
                 if (isWeaponColider == true)
                 {
                     meshColider.enabled = true;
@@ -272,10 +273,6 @@ public class PlayerScript : MonoBehaviour
 
     public void FixedUpdate()
     {
-
-
-        
-
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
         Camforward = Vector3.Scale(CamPos.forward, new Vector3(1, 0, 1)).normalized;

@@ -1,13 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 
 public class GamaManagerScript : MonoBehaviour
 {
-    bool playerDead = PlayerScript.isDead;
-    bool enemyDead = EnemyScript.isDead;
 
     public GameObject victoryText;
     public GameObject failedText;
@@ -16,20 +15,33 @@ public class GamaManagerScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        failedText.SetActive(false);
+        spaceKey.SetActive(false);
+        victoryText.SetActive(false);
+        PlayerScript.isDead = false;
+        BossScript.isDown = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (playerDead == true)
+        if (PlayerScript.isDead == true)
         {
             failedText.SetActive(true);
             spaceKey.SetActive(true);
-        }else if(enemyDead == true)
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                SceneManager.LoadScene("TitleScene");
+            }
+        }
+        else if(BossScript.isDown == true)
         {
             victoryText.SetActive(true);
             spaceKey.SetActive(true);
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                SceneManager.LoadScene("TitleScene");
+            }
         }
     }
 }

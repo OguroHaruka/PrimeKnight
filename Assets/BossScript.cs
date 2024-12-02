@@ -1,17 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class BossScript : MonoBehaviour
 {
     bool playerDamage = PlayerScript.playerIsDamage;
+    public static bool bossAttack_A;
+    bool bossAttack_B;
+    bool bossAttack_C_1;
+    bool bossAttack_C_2;
     int Damage = PlayerScript.Power;
     public Animator animator;
     public GameObject player;
     public Slider HP;
     public Rigidbody rb;
     public BoxCollider boxColider;
+    public ParticleSystem slashParticle;
 
     public static bool isDamage;
 
@@ -32,12 +38,14 @@ public class BossScript : MonoBehaviour
     bool isWait;
     bool isWalk;
     bool isBack;
-    bool isDown;
+    public static bool isDown;
     // Start is called before the first frame update
     void Start()
     {
         player = GameObject.Find("Player");
-
+        HP.value = 300;
+        Application.targetFrameRate = 60;
+        slashParticle.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -63,6 +71,28 @@ public class BossScript : MonoBehaviour
             case 5:
 
             break;
+        }
+        if (HP.value <= 0)
+        {
+            DownAnime(true);
+            actionPattern = 5;
+            animator.SetBool("Attack_A_1", false);
+            animator.SetBool("Attack_A_2", false);
+
+            animator.SetBool("Attack_B_1", false);
+            animator.SetBool("Attack_B_2", false);
+            animator.SetBool("Attack_B_3", false);
+
+            animator.SetBool("Attack_C_1", false);
+            animator.SetBool("Attack_C_2", false);
+            animator.SetBool("Attack_C_3", false);
+            animator.SetBool("Attack_C_4", false);
+
+            WaitAnime(false);
+            WalkAnime(false);
+            BackAnime(false);
+            WeaponColliderOf();
+
         }
     }
 
@@ -113,6 +143,13 @@ public class BossScript : MonoBehaviour
         animatorCount = 0;
         rotSpeed = 3;
 
+        slashParticle.gameObject.SetActive(false);
+
+        bossAttack_A =false;
+        bossAttack_B=false;
+        bossAttack_C_1=false;
+        bossAttack_C_2=false;
+
         removeCount += Time.deltaTime;
 
         if (removeRandFlag == false)
@@ -159,10 +196,19 @@ public class BossScript : MonoBehaviour
         setRot = Mathf.Atan2(_dir.x, _dir.z) * Mathf.Rad2Deg;
         DirSet();
         animatorCount += Time.deltaTime;
+        bossAttack_A = true;
         if (animatorCount >= 0.4 && animatorCount <= 0.75)
         {
             speed = 0.04f;
             this.transform.Translate(Vector3.forward * speed);
+        }
+        if (animatorCount >= 0.4 && animatorCount <= 0.9)
+        {
+            slashParticle.gameObject.SetActive(true);
+        }
+        else
+        {
+            slashParticle.gameObject.SetActive(false);
         }
         if ((animatorCount >= 1.3))
         {
@@ -177,10 +223,20 @@ public class BossScript : MonoBehaviour
         DirSet();
         rotSpeed = 10;
         animatorCount += Time.deltaTime;
+        bossAttack_B = true;
         if (animatorCount >= 0.7 && animatorCount <= 0.9)
         {
             speed = 0.07f;
             this.transform.Translate(Vector3.forward * speed);
+            
+        }
+        if (animatorCount >= 0.7 && animatorCount <= 1.0)
+        {
+            slashParticle.gameObject.SetActive(true);
+        }
+        else
+        {
+            slashParticle.gameObject.SetActive(false);
         }
         if ((animatorCount >= 1.5))
         {
@@ -197,9 +253,11 @@ public class BossScript : MonoBehaviour
 
         if (animatorCount <= 0.35)
         {
+            bossAttack_C_1 = true;
             rotSpeed = 20;
             speed = 0.05f;
             this.transform.Translate(Vector3.forward * speed);
+            
         }
         else
         {
@@ -208,11 +266,21 @@ public class BossScript : MonoBehaviour
 
         if (animatorCount >= 1&& animatorCount <= 1.3)
         {
+            bossAttack_C_2 = true;
             speed = 0.04f;
             this.transform.Translate(Vector3.forward * speed);
         }
 
-        if ((animatorCount >= 2.05))
+        if (animatorCount >= 0.35 && animatorCount <= 1.5)
+        {
+            slashParticle.gameObject.SetActive(true);
+        }
+        else
+        {
+            slashParticle.gameObject.SetActive(false);
+        }
+
+            if ((animatorCount >= 2.05))
         {
             actionPattern = 1;
         }
@@ -238,12 +306,12 @@ public class BossScript : MonoBehaviour
 
     void WeaponColliderOn()
     {
-        
+        boxColider.enabled = true;
     }
 
     void WeaponColliderOf()
     {
-
+        boxColider.enabled = false;
     }
 
     void WalkAnime(bool _isWalk)
@@ -289,4 +357,20 @@ public class BossScript : MonoBehaviour
         transform.eulerAngles = _rot;
     }
 
+    public bool GetAttack_A()
+    {
+        return bossAttack_A;
+    }
+    public bool GetAttack_B()
+    {
+        return bossAttack_B;
+    }
+    public bool GetAttack_C_1()
+    {
+        return bossAttack_C_1;
+    }
+    public bool GetAttack_C_2()
+    {
+        return bossAttack_C_2;
+    }
 }

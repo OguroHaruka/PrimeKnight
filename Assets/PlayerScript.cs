@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class PlayerScript : MonoBehaviour
 {
-    bool isEnemyDamage = EnemyScript.isDamage;
     public MeshCollider meshColider;
     bool isWeaponColider;
     public static bool playerIsDamage;
@@ -167,14 +166,14 @@ public class PlayerScript : MonoBehaviour
                 stamina.value += 4;
             }
 
-            if (stamina.value <= 0)
-            {
-                isPlayerActioin = false;
-                if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Recovery"))
-                {
-                    moveSpeed = 0.03f;
-                }
-            }
+            //if (stamina.value <= 0)
+            //{
+            //    isPlayerActioin = false;
+            //    if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Recovery"))
+            //    {
+            //        moveSpeed = 0.03f;
+            //    }
+            //}
 
             if (stamina.value > 500)
             {
@@ -244,11 +243,6 @@ public class PlayerScript : MonoBehaviour
                 {
                     meshColider.enabled = true;
                 }
-                if (isEnemyDamage == true)
-                {
-                    isWeaponColider = false;
-                    meshColider.enabled = false;
-                }
 
                 moveSpeed = 0.0f;
                 isStaminaRecovery = false;
@@ -268,14 +262,7 @@ public class PlayerScript : MonoBehaviour
             {
                 if (isWeaponColider == false)
                 {
-                    isEnemyDamage = false;
                     meshColider.enabled = true;
-                }
-                if (isEnemyDamage == true)
-                {
-
-                    isWeaponColider = true;
-                    meshColider.enabled = false;
                 }
 
                 Power = 15;
@@ -304,7 +291,6 @@ public class PlayerScript : MonoBehaviour
                 meshColider.enabled = false;
                 isStaminaReduce = false;
                 isStaminaRecovery = true;
-                isEnemyDamage = false;
                 isWeaponColider = true;
                 slashEffectFlag1 = false;
                 slashEffectFlag2 = false;

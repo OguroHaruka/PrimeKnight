@@ -19,7 +19,9 @@ public class BossScript : MonoBehaviour
     public BoxCollider boxColider;
     public ParticleSystem slashParticle;
 
-    public static bool isDamage;
+    public static bool isDamage = true;
+
+    bool attackDamageActive = true;
 
     float speed = 0.03f;
 
@@ -46,6 +48,8 @@ public class BossScript : MonoBehaviour
         HP.value = 300;
         Application.targetFrameRate = 60;
         slashParticle.gameObject.SetActive(false);
+        isDamage = true;
+        attackDamageActive = true;
     }
 
     // Update is called once per frame
@@ -105,6 +109,9 @@ public class BossScript : MonoBehaviour
 
         WalkAnime(true);
 
+        PlayerScript.isBoDamage=true;
+        attackDamageActive = true;
+
         speed = 0.04f;
         this.transform.Translate(Vector3.forward * speed);
 
@@ -144,6 +151,9 @@ public class BossScript : MonoBehaviour
         rotSpeed = 3;
 
         slashParticle.gameObject.SetActive(false);
+
+        PlayerScript.isBoDamage = true;
+        attackDamageActive = true;
 
         bossAttack_A =false;
         bossAttack_B=false;
@@ -266,6 +276,11 @@ public class BossScript : MonoBehaviour
 
         if (animatorCount >= 1&& animatorCount <= 1.3)
         {
+            if (attackDamageActive == true)
+            {
+                PlayerScript.isBoDamage = true;
+                attackDamageActive = false;
+            }
             bossAttack_C_2 = true;
             speed = 0.04f;
             this.transform.Translate(Vector3.forward * speed);
@@ -295,9 +310,10 @@ public class BossScript : MonoBehaviour
 
         if (other.gameObject.tag == "PlayerAttack")
         {
-            if (isDamage == false)
+            if (PlayerScript.isDamage == true)
             {
                 HP.value -= Damage;
+                PlayerScript.isDamage = false;
             }
 
         }

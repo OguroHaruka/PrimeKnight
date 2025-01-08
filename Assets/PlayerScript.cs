@@ -5,6 +5,11 @@ using UnityEngine.UI;
 
 public class PlayerScript : MonoBehaviour
 {
+    public GameObject Recovery3;
+    public GameObject Recovery2;
+    public GameObject Recovery1;
+    public GameObject Recovery0;
+
     public MeshCollider meshColider;
     bool isWeaponColider;
     public static bool playerIsDamage;
@@ -41,9 +46,11 @@ public class PlayerScript : MonoBehaviour
     Vector3 latestPos;
     Vector3 movingDirection;
 
-    public static int Power = 10;
+    public static int Power = 15;
 
-
+    public static bool isBoDamage = true;
+    public static bool isDamage = true;
+    bool isDamageactive = true;
 
     // Start is called before the first frame update
     void Start()
@@ -68,6 +75,14 @@ public class PlayerScript : MonoBehaviour
         slashEffectCount=0;
         slashEffectFlag1 = false;
         slashEffectFlag2 = false;
+        isDamage = true;
+        isDamageactive = true;
+        isBoDamage = true;
+        Recovery3.SetActive(false);
+        Recovery2.SetActive(false);
+        Recovery1.SetActive(false);
+        Recovery0.SetActive(false);
+        Power = 15;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -76,14 +91,47 @@ public class PlayerScript : MonoBehaviour
         {
             if (other.gameObject.tag == "EnemyAttack")
             {
-                hp.value -= 15;
-
+                if (isBoDamage == true)
+                {
+                    hp.value -= 20;
+                    isBoDamage = false;
+                }
             }
         }
     }
         // Update is called once per frame
         void Update()
     {
+
+        if (recoveryItem == 3)
+        {
+            Recovery3.SetActive(true);
+            Recovery2.SetActive(false);
+            Recovery1.SetActive(false);
+            Recovery0.SetActive(false);
+        }
+        else if(recoveryItem == 2)
+        {
+            Recovery3.SetActive(false);
+            Recovery2.SetActive(true);
+            Recovery1.SetActive(false);
+            Recovery0.SetActive(false);
+        }
+        else if (recoveryItem == 1)
+        {
+            Recovery3.SetActive(false);
+            Recovery2.SetActive(false);
+            Recovery1.SetActive(true);
+            Recovery0.SetActive(false);
+        }
+        else if (recoveryItem == 0)
+        {
+            Recovery3.SetActive(false);
+            Recovery2.SetActive(false);
+            Recovery1.SetActive(false);
+            Recovery0.SetActive(true);
+        }
+
         float x = Input.GetAxisRaw("Horizontal");
         float z = Input.GetAxisRaw("Vertical");
         movingDirection = new Vector3(x, 0, z);
@@ -133,15 +181,20 @@ public class PlayerScript : MonoBehaviour
         }
         if (isPlayerActioin == true)
         {
-            if (Input.GetMouseButtonDown(0))
+            if (stamina.value >= 150)
             {
-                animator.SetBool("Attack", true);
+                if (Input.GetMouseButtonDown(0))
+                {
+                    animator.SetBool("Attack", true);
+                }
             }
-
-            if (Input.GetMouseButtonDown(1) && (x != 0 || z != 0))
+            if (stamina.value >= 300)
             {
-                animator.SetBool("Rolling", true);
-                
+                if (Input.GetMouseButtonDown(1) && (x != 0 || z != 0))
+                {
+                    animator.SetBool("Rolling", true);
+
+                }
             }
         }
 
@@ -165,7 +218,7 @@ public class PlayerScript : MonoBehaviour
             {
                 stamina.value += 4;
             }
-
+            
             //if (stamina.value <= 0)
             //{
             //    isPlayerActioin = false;
@@ -192,7 +245,7 @@ public class PlayerScript : MonoBehaviour
                 if (isRolling == false)
                 {
                     rollingTime = Time.deltaTime;
-                    if (rollingTime <= 40)
+                    if (rollingTime <= 45)
                     {
                         isRollingNow = true;
                     }
@@ -238,7 +291,7 @@ public class PlayerScript : MonoBehaviour
         {
             if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack1"))
             {
-
+                
                 if (isWeaponColider == true)
                 {
                     meshColider.enabled = true;
@@ -260,12 +313,17 @@ public class PlayerScript : MonoBehaviour
             }
             else if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack2"))
             {
+                if (isDamageactive == true)
+                {
+                    isDamage = true;
+                    isDamageactive = false;
+                }
                 if (isWeaponColider == false)
                 {
                     meshColider.enabled = true;
                 }
 
-                Power = 15;
+                Power = 20;
                 if (isStaminaReduce == true)
                 {
                     isStaminaReduce = false;
@@ -287,13 +345,15 @@ public class PlayerScript : MonoBehaviour
                         moveSpeed = 0.15f;
                     }
                 }
-                Power = 10;
+                Power = 15;
                 meshColider.enabled = false;
                 isStaminaReduce = false;
                 isStaminaRecovery = true;
                 isWeaponColider = true;
                 slashEffectFlag1 = false;
                 slashEffectFlag2 = false;
+                isDamage = true;
+                isDamageactive = true;
             }
         }
 

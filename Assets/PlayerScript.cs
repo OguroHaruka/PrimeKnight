@@ -10,6 +10,8 @@ public class PlayerScript : MonoBehaviour
     public GameObject Recovery1;
     public GameObject Recovery0;
 
+    private AudioSource[] Sounds;
+
     public MeshCollider meshColider;
     bool isWeaponColider;
     public static bool playerIsDamage;
@@ -26,7 +28,11 @@ public class PlayerScript : MonoBehaviour
     public static bool isDead = false;
     int recoveryItem = 3;
 
+    public ParticleSystem healParticle;
+
     public ParticleSystem slashParticle;
+    public ParticleSystem damageParticle;
+    public static bool isDamageParticleFlag;
     float slashEffectCount;
     bool slashEffectFlag1;
     bool slashEffectFlag2;
@@ -46,7 +52,7 @@ public class PlayerScript : MonoBehaviour
     Vector3 latestPos;
     Vector3 movingDirection;
 
-    public static int Power = 15;
+    public static int Power = 20;
 
     public static bool isBoDamage = true;
     public static bool isDamage = true;
@@ -55,6 +61,9 @@ public class PlayerScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Sounds = gameObject.GetComponents<AudioSource>();
+        Sounds[0].Stop();
+        Sounds[1].Stop();
         playerIsDamage = false;
         CamPos = camera.transform;
         rb = GetComponent<Rigidbody>();
@@ -82,7 +91,8 @@ public class PlayerScript : MonoBehaviour
         Recovery2.SetActive(false);
         Recovery1.SetActive(false);
         Recovery0.SetActive(false);
-        Power = 15;
+        Power = 20;
+        isDamageParticleFlag = false;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -95,14 +105,22 @@ public class PlayerScript : MonoBehaviour
                 {
                     hp.value -= 20;
                     isBoDamage = false;
+                    Sounds[1].Play();
                 }
+                isDamageParticleFlag = true;
+                damageParticle.gameObject.SetActive(isDamageParticleFlag);
             }
+            else
+            {
+                isDamageParticleFlag = false;
+                damageParticle.gameObject.SetActive(isDamageParticleFlag);
+            }
+
         }
     }
         // Update is called once per frame
         void Update()
     {
-
         if (recoveryItem == 3)
         {
             Recovery3.SetActive(true);
@@ -148,7 +166,6 @@ public class PlayerScript : MonoBehaviour
             slashParticle.gameObject.SetActive(false);
             slashEffectCount = 0;
         }
-
         if (z > 0)
             {
                 animator.SetBool("Walk", true);
@@ -159,7 +176,9 @@ public class PlayerScript : MonoBehaviour
             }
             else if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.S))
             {
+            
                 rb.velocity = new Vector3(movingVelocity.x, rb.velocity.y, 0.0f);
+            
             }
 
             if (x < 0)
@@ -202,6 +221,7 @@ public class PlayerScript : MonoBehaviour
         {
             meshColider.enabled = false;
             moveSpeed = 0.0f;
+            isDamageParticleFlag = false;
             {
                 animator.SetBool("Dead", true);
             }
@@ -272,6 +292,8 @@ public class PlayerScript : MonoBehaviour
                     isRecovery = true;
                     recoveryItem -= 1;
                     hp.value += 60;
+                    healParticle.gameObject.SetActive(true);
+                    Sounds[0].Play();
                 }
                 moveSpeed = 0.0f;
                 
@@ -279,6 +301,7 @@ public class PlayerScript : MonoBehaviour
             else
             {
                 isRecovery = false;
+                healParticle.gameObject.SetActive(false);
             }
         }
 
@@ -323,7 +346,7 @@ public class PlayerScript : MonoBehaviour
                     meshColider.enabled = true;
                 }
 
-                Power = 20;
+                Power = 25;
                 if (isStaminaReduce == true)
                 {
                     isStaminaReduce = false;
@@ -345,7 +368,7 @@ public class PlayerScript : MonoBehaviour
                         moveSpeed = 0.15f;
                     }
                 }
-                Power = 15;
+                Power = 20;
                 meshColider.enabled = false;
                 isStaminaReduce = false;
                 isStaminaRecovery = true;

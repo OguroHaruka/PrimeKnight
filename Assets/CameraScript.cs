@@ -17,11 +17,17 @@ public class CameraScript : MonoBehaviour
     {
         this.player = GameObject.Find("Player");
         pastPos = player.transform.position;
+        GetComponent<PostEffectAttacher>().enabled = false;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (PlayerScript.isDead == true)
+        {
+            GetComponent<PostEffectAttacher>().enabled = true;
+        }
+
         currentPos = player.transform.position;
         offset = currentPos - pastPos;
         transform.position = Vector3.Lerp(transform.position,transform.position + offset,1.0f);

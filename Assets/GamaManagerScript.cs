@@ -15,6 +15,9 @@ public class GamaManagerScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
         failedText.SetActive(false);
         spaceKey.SetActive(false);
         victoryText.SetActive(false);

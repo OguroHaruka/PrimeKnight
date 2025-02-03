@@ -18,6 +18,10 @@ public class BossScript : MonoBehaviour
     public Rigidbody rb;
     public BoxCollider boxColider;
     public ParticleSystem slashParticle;
+    public ParticleSystem deathParticle;
+    public ParticleSystem damageParticle;
+
+    private AudioSource attackSound;
 
     public static bool isDamage = true;
 
@@ -44,10 +48,13 @@ public class BossScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        attackSound = GetComponent<AudioSource>();
+        attackSound.Stop();
         player = GameObject.Find("Player");
         HP.value = 300;
         Application.targetFrameRate = 60;
         slashParticle.gameObject.SetActive(false);
+        deathParticle.gameObject.SetActive(false);
         isDamage = true;
         attackDamageActive = true;
     }
@@ -55,27 +62,27 @@ public class BossScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        switch (actionPattern)
-        {
-            case 0:
-                Chase();
-                break;
-            case 1:
-                Remove();
-                break;
-            case 2:
-                Attack_A();
-                break;
-            case 3:
-                Attack_B();
-                break;
-            case 4:
-                Attack_C();
-                break;
-            case 5:
+            switch (actionPattern)
+            {
+                case 0:
+                    Chase();
+                    break;
+                case 1:
+                    Remove();
+                    break;
+                case 2:
+                    Attack_A();
+                    break;
+                case 3:
+                    Attack_B();
+                    break;
+                case 4:
+                    Attack_C();
+                    break;
+                case 5:
 
-            break;
-        }
+                    break;
+            }
         if (HP.value <= 0)
         {
             DownAnime(true);
@@ -92,19 +99,21 @@ public class BossScript : MonoBehaviour
             animator.SetBool("Attack_C_3", false);
             animator.SetBool("Attack_C_4", false);
 
+            deathParticle.gameObject.SetActive(true);
+
             WaitAnime(false);
             WalkAnime(false);
             BackAnime(false);
             WeaponColliderOf();
-
+            damageParticle.gameObject.SetActive(false);
         }
     }
 
     void Chase()
     {
+        //ƒvƒŒƒCƒ„[‚Ì•ûŒü‚ÉŒü‚­
         var _dir = player.transform.position - transform.position;
         setRot = Mathf.Atan2(_dir.x, _dir.z) * Mathf.Rad2Deg;
-
         DirSet();
 
         WalkAnime(true);
@@ -300,7 +309,6 @@ public class BossScript : MonoBehaviour
             actionPattern = 1;
         }
     }
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Player")
@@ -314,8 +322,14 @@ public class BossScript : MonoBehaviour
             {
                 HP.value -= Damage;
                 PlayerScript.isDamage = false;
+                damageParticle.gameObject.SetActive(true);
+                attackSound.Play();
             }
-
+            
+        }
+        else
+        {
+            damageParticle.gameObject.SetActive(false);
         }
 
     }
